@@ -4,6 +4,7 @@ import com.dnsouzadev.api_park.entity.Usuario;
 import com.dnsouzadev.api_park.service.UsuarioService;
 import com.dnsouzadev.api_park.web.dto.UsuarioCreateDto;
 import com.dnsouzadev.api_park.web.dto.UsuarioResponseDto;
+import com.dnsouzadev.api_park.web.dto.UsuarioSenhaDto;
 import com.dnsouzadev.api_park.web.dto.mapper.UsuarioMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,15 +27,15 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> findById(@PathVariable Long id) {
+    public ResponseEntity<UsuarioResponseDto> findById(@PathVariable Long id) {
         Usuario user = usuarioService.findById(id);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(UsuarioMapper.toDto(user));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Usuario> updatePassword(@PathVariable Long id, @RequestBody Usuario usuario) {
-        Usuario user = usuarioService.updatePassword(id, usuario.getPassword());
-        return ResponseEntity.ok(user);
+    public ResponseEntity<Void> updatePassword(@PathVariable Long id, @RequestBody UsuarioSenhaDto dto) {
+        usuarioService.updatePassword(id, dto.getSenhaAtual(), dto.getNovaSenha(), dto.getConfirmaSenha());
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping

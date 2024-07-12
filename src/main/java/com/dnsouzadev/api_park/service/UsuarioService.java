@@ -26,9 +26,17 @@ public class UsuarioService {
     }
 
     @Transactional
-    public Usuario updatePassword(Long id, String password) {
+    public Usuario updatePassword(Long id, String senhaAtual, String novaSenha, String confirmaSenha) {
+        if (!novaSenha.equals(confirmaSenha)) {
+            throw new RuntimeException("Nova senha e confirmação de senha não conferem");
+        }
         Usuario user = findById(id);
-        user.setPassword(password);
+
+        if (!user.getPassword().equals(senhaAtual)) {
+            throw new RuntimeException("Senha atual inválida");
+        }
+
+        user.setPassword(novaSenha);
         usuarioRepository.save(user);
         return user;
     }
