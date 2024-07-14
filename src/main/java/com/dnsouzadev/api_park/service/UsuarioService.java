@@ -22,23 +22,22 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public Usuario findById(Long id) {
         return usuarioRepository.findById(id).orElseThrow(
-        () -> new RuntimeException("Usuário não encontrado"));
+        () -> new RuntimeException("User dont found"));
     }
 
     @Transactional
-    public Usuario updatePassword(Long id, String senhaAtual, String novaSenha, String confirmaSenha) {
+    public void updatePassword(Long id, String senhaAtual, String novaSenha, String confirmaSenha) {
         if (!novaSenha.equals(confirmaSenha)) {
-            throw new RuntimeException("Nova senha e confirmação de senha não conferem");
+            throw new RuntimeException("new password and confirm password must be equals");
         }
         Usuario user = findById(id);
 
         if (!user.getPassword().equals(senhaAtual)) {
-            throw new RuntimeException("Senha atual inválida");
+            throw new RuntimeException("current password is invalid");
         }
 
         user.setPassword(novaSenha);
         usuarioRepository.save(user);
-        return user;
     }
 
     @Transactional(readOnly = true)

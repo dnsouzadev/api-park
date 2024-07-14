@@ -20,10 +20,10 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
-    @PostMapping
-    public ResponseEntity<UsuarioResponseDto> create(@RequestBody UsuarioCreateDto createDto) {
-        Usuario user = usuarioService.save(UsuarioMapper.toUsuario(createDto));
-        return ResponseEntity.status(HttpStatus.CREATED).body(UsuarioMapper.toDto(user));
+    @GetMapping
+    public ResponseEntity<List<UsuarioResponseDto>> findAll() {
+        List<Usuario> users = usuarioService.findAll();
+        return ResponseEntity.ok(UsuarioMapper.toListDto(users));
     }
 
     @GetMapping("/{id}")
@@ -32,15 +32,16 @@ public class UsuarioController {
         return ResponseEntity.ok(UsuarioMapper.toDto(user));
     }
 
+    @PostMapping
+    public ResponseEntity<UsuarioResponseDto> create(@RequestBody UsuarioCreateDto createDto) {
+        Usuario user = usuarioService.save(UsuarioMapper.toUsuario(createDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(UsuarioMapper.toDto(user));
+    }
+
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updatePassword(@PathVariable Long id, @RequestBody UsuarioSenhaDto dto) {
         usuarioService.updatePassword(id, dto.getSenhaAtual(), dto.getNovaSenha(), dto.getConfirmaSenha());
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping
-    public ResponseEntity<List<UsuarioResponseDto>> findAll() {
-        List<Usuario> usuarios = usuarioService.findAll();
-        return ResponseEntity.ok(UsuarioMapper.toListDto(usuarios));
-    }
 }
