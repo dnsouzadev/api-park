@@ -1,8 +1,10 @@
 package com.dnsouzadev.api_park.service;
 
 import com.dnsouzadev.api_park.entity.Usuario;
+import com.dnsouzadev.api_park.exception.UsernameUniqueViolationException;
 import com.dnsouzadev.api_park.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +18,12 @@ public class UsuarioService {
 
     @Transactional
     public Usuario save(Usuario usuario) {
-        return usuarioRepository.save(usuario);
+        try {
+            return usuarioRepository.save(usuario);
+        } catch (DataIntegrityViolationException e) {
+            throw new UsernameUniqueViolationException(String.format("Username {%s} already exists", usuario.getUsername()));
+        }
+
     }
 
     @Transactional(readOnly = true)
