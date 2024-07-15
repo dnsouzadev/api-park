@@ -7,6 +7,7 @@ import com.dnsouzadev.api_park.exception.UsernameUniqueViolationException;
 import com.dnsouzadev.api_park.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +18,12 @@ import java.util.List;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public Usuario save(Usuario usuario) {
         try {
+            usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
             return usuarioRepository.save(usuario);
         } catch (DataIntegrityViolationException e) {
             throw new UsernameUniqueViolationException(String.format("Username {%s} already exists", usuario.getUsername()));
@@ -36,21 +39,35 @@ public class UsuarioService {
 
     @Transactional
     public void updatePassword(Long id, String senhaAtual, String novaSenha, String confirmaSenha) {
+
         if (!novaSenha.equals(confirmaSenha)) {
-            throw new PasswordInvalidException("new password and confirm password must be equals");
+            throw new PasswordInvalidException("New password and confirm password are different");
         }
+
         Usuario user = findById(id);
 
-        if (!user.getPassword().equals(senhaAtual)) {
-            throw new PasswordInvalidException("current password is invalid");
+        if (!passwordEncoder.matches(senhaAtual, user.getPassword())) {
+            throw new PasswordInvalidException("Current password is invalid");
         }
 
-        user.setPassword(novaSenha);
+        user.setPassword(passwordEncoder.encode(novaSenha));
         usuarioRepository.save(user);
     }
 
     @Transactional(readOnly = true)
     public List<Usuario> findAll() {
         return usuarioRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public Usuario findByUsername(String username) {
+        return usuarioRepository.findByUsername(username).orElseThrow(
+        () -> new EntityNotFoundException(String.format("User username=%s dont found", username)));
+    }
+
+    @Transactional(readOnly = true)
+    public Usuario.Role getRoleByUsername(String username) {
+        return usuarioRepository.findRoleByUsername(username).orElseThrow(
+        () -> new EntityNotFoundException(String.format("Role from username=%s dont found", username)));
     }
 }
