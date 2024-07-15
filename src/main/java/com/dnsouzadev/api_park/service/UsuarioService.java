@@ -2,6 +2,7 @@ package com.dnsouzadev.api_park.service;
 
 import com.dnsouzadev.api_park.entity.Usuario;
 import com.dnsouzadev.api_park.exception.EntityNotFoundException;
+import com.dnsouzadev.api_park.exception.PasswordInvalidException;
 import com.dnsouzadev.api_park.exception.UsernameUniqueViolationException;
 import com.dnsouzadev.api_park.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,12 +37,12 @@ public class UsuarioService {
     @Transactional
     public void updatePassword(Long id, String senhaAtual, String novaSenha, String confirmaSenha) {
         if (!novaSenha.equals(confirmaSenha)) {
-            throw new RuntimeException("new password and confirm password must be equals");
+            throw new PasswordInvalidException("new password and confirm password must be equals");
         }
         Usuario user = findById(id);
 
         if (!user.getPassword().equals(senhaAtual)) {
-            throw new RuntimeException("current password is invalid");
+            throw new PasswordInvalidException("current password is invalid");
         }
 
         user.setPassword(novaSenha);
