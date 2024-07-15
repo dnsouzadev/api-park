@@ -1,6 +1,7 @@
 package com.dnsouzadev.api_park.service;
 
 import com.dnsouzadev.api_park.entity.Usuario;
+import com.dnsouzadev.api_park.exception.EntityNotFoundException;
 import com.dnsouzadev.api_park.exception.UsernameUniqueViolationException;
 import com.dnsouzadev.api_park.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public Usuario findById(Long id) {
         return usuarioRepository.findById(id).orElseThrow(
-        () -> new RuntimeException("User dont found"));
+        () -> new EntityNotFoundException(String.format("User id=%s dont found", id)));
     }
 
     @Transactional
