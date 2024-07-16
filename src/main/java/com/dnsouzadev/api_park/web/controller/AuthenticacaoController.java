@@ -3,7 +3,13 @@ package com.dnsouzadev.api_park.web.controller;
 import com.dnsouzadev.api_park.jwt.JwtToken;
 import com.dnsouzadev.api_park.jwt.JwtUserDetailsService;
 import com.dnsouzadev.api_park.web.dto.UsuarioLoginDto;
+import com.dnsouzadev.api_park.web.dto.UsuarioResponseDto;
 import com.dnsouzadev.api_park.web.exception.ErrorMessage;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +29,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "Authentication", description = "Resource to authenticate users")
 public class AuthenticacaoController {
 
     private final JwtUserDetailsService detailsService;
     private final AuthenticationManager authenticationManager;
 
+    @Operation(summary = "Authentication", description = "resource for auth user", responses = {
+            @ApiResponse(responseCode = "20", description = "User authenticated with success, return token",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UsuarioResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Credentials",
+                    content = @Content(mediaType = "application/json",
+                            schema=@Schema(implementation = ErrorMessage.class))),
+            @ApiResponse(responseCode = "422", description = "Validation error",
+                    content = @Content(mediaType = "application/json",
+                            schema=@Schema(implementation = ErrorMessage.class)))
+    })
     @PostMapping("/auth")
     public ResponseEntity<?> autenticar(@RequestBody @Valid UsuarioLoginDto dto, HttpServletRequest request) {
 
