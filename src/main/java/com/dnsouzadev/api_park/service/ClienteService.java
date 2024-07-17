@@ -2,6 +2,7 @@ package com.dnsouzadev.api_park.service;
 
 import com.dnsouzadev.api_park.entity.Cliente;
 import com.dnsouzadev.api_park.exception.CpfUniqueViolationException;
+import com.dnsouzadev.api_park.exception.EntityNotFoundException;
 import com.dnsouzadev.api_park.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -28,7 +29,8 @@ public class ClienteService {
 
     @Transactional(readOnly = true)
     public Cliente findById(Long id) {
-        return clienteRepository.findById(id).orElse(null);
+        return clienteRepository.findById(id).orElseThrow(
+                (() -> new EntityNotFoundException(String.format("Client with id {%d} not found", id))));
     }
 
     @Transactional
