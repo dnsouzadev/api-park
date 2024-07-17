@@ -20,7 +20,4 @@ public class ClienteCreateDto {
     @Size(min = 11, max = 11)
     @CPF
     private String cpf;
-    @NotNull
-    private Long idUsuario;
-
 }

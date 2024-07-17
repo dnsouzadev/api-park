@@ -2,6 +2,7 @@ package com.dnsouzadev.api_park.web.dto.mapper;
 
 import com.dnsouzadev.api_park.entity.Cliente;
 import com.dnsouzadev.api_park.web.dto.ClienteCreateDto;
+import com.dnsouzadev.api_park.web.dto.ClienteResponseDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -13,8 +14,8 @@ public class ClienteMapper {
         return new ModelMapper().map(dto, Cliente.class);
     }
 
-    public static ClienteCreateDto toDto(Cliente cliente) {
-        return new ModelMapper().map(cliente, ClienteCreateDto.class);
+    public static ClienteResponseDto toDto(Cliente cliente) {
+        return new ModelMapper().map(cliente, ClienteResponseDto.class);
     }
 
 }
