@@ -2,12 +2,15 @@ package com.dnsouzadev.api_park.web.controller;
 
 import com.dnsouzadev.api_park.entity.Cliente;
 import com.dnsouzadev.api_park.jwt.JwtUserDetails;
+import com.dnsouzadev.api_park.repository.projection.ClienteProjection;
 import com.dnsouzadev.api_park.service.ClienteService;
 import com.dnsouzadev.api_park.service.UsuarioService;
 import com.dnsouzadev.api_park.web.dto.ClienteCreateDto;
 import com.dnsouzadev.api_park.web.dto.ClienteResponseDto;
+import com.dnsouzadev.api_park.web.dto.PageableDto;
 import com.dnsouzadev.api_park.web.dto.UsuarioResponseDto;
 import com.dnsouzadev.api_park.web.dto.mapper.ClienteMapper;
+import com.dnsouzadev.api_park.web.dto.mapper.PageableMapper;
 import com.dnsouzadev.api_park.web.exception.ErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,10 +20,14 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "Clients", description = "Client management")
 @RequiredArgsConstructor
@@ -68,6 +75,13 @@ public class ClienteController {
     public ResponseEntity<ClienteResponseDto> getById(@PathVariable Long id) {
         Cliente cliente = clienteService.findById(id);
         return ResponseEntity.ok(ClienteMapper.toDto(cliente));
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<PageableDto> getAll(Pageable pageable) {
+        Page<ClienteProjection> clientes = clienteService.getAll(pageable);
+        return ResponseEntity.ok(PageableMapper.toDto(clientes));
     }
 
 

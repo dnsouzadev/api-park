@@ -4,8 +4,11 @@ import com.dnsouzadev.api_park.entity.Cliente;
 import com.dnsouzadev.api_park.exception.CpfUniqueViolationException;
 import com.dnsouzadev.api_park.exception.EntityNotFoundException;
 import com.dnsouzadev.api_park.repository.ClienteRepository;
+import com.dnsouzadev.api_park.repository.projection.ClienteProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,8 +42,8 @@ public class ClienteService {
     }
 
     @Transactional(readOnly = true)
-    public List<Cliente> getAll() {
-        return clienteRepository.findAll();
+    public Page<ClienteProjection> getAll(Pageable pageable) {
+        return clienteRepository.findAllPageable(pageable);
     }
 
 }
