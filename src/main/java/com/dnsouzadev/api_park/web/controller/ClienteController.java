@@ -1,5 +1,6 @@
 package com.dnsouzadev.api_park.web.controller;
 
+import ch.qos.logback.core.net.server.Client;
 import com.dnsouzadev.api_park.entity.Cliente;
 import com.dnsouzadev.api_park.jwt.JwtUserDetails;
 import com.dnsouzadev.api_park.repository.projection.ClienteProjection;
@@ -70,7 +71,7 @@ public class ClienteController {
             security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Client found",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponseDto.class))),
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClienteResponseDto.class))),
                     @ApiResponse(responseCode = "404", description = "Client not found",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
                     @ApiResponse(responseCode = "403", description = "Access denied",
@@ -102,7 +103,7 @@ public class ClienteController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "list of all clients",
                             content = @Content(mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = UsuarioResponseDto.class)))),
+                                    array = @ArraySchema(schema = @Schema(implementation = ClienteResponseDto.class)))),
                     @ApiResponse(responseCode = "403", description = "Access denied",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
                     @ApiResponse(responseCode = "401", description = "Unauthorized",
@@ -114,6 +115,23 @@ public class ClienteController {
     public ResponseEntity<PageableDto> getAll(@Parameter(hidden = true) @PageableDefault(size = 5, sort = {"nome"}) Pageable pageable) {
         Page<ClienteProjection> clientes = clienteService.getAll(pageable);
         return ResponseEntity.ok(PageableMapper.toDto(clientes));
+    }
+
+    @Operation(summary = "get details by client", description = "request required a bearer token",
+            security = @SecurityRequirement(name = "security"),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Client found",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClienteResponseDto.class))),
+                    @ApiResponse(responseCode = "403", description = "Access denied",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+            })
+    @GetMapping("/detalhes")
+    @PreAuthorize("hasRole('CLIENTE')")
+    public ResponseEntity<ClienteResponseDto> getDetails(@AuthenticationPrincipal JwtUserDetails userDetails) {
+        Cliente cliente = clienteService.searchByUserId(userDetails.getId());
+        return ResponseEntity.ok(ClienteMapper.toDto(cliente));
     }
 
 

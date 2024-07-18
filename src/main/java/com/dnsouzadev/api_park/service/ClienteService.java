@@ -36,14 +36,14 @@ public class ClienteService {
                 (() -> new EntityNotFoundException(String.format("Client with id {%d} not found", id))));
     }
 
-    @Transactional
-    public void delete(Long id) {
-        clienteRepository.deleteById(id);
-    }
 
     @Transactional(readOnly = true)
     public Page<ClienteProjection> getAll(Pageable pageable) {
         return clienteRepository.findAllPageable(pageable);
     }
 
+    @Transactional(readOnly = true)
+    public Cliente searchByUserId(Long id) {
+        return clienteRepository.findByUsuarioId(id);
+    }
 }
