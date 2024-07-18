@@ -2,6 +2,7 @@ package com.dnsouzadev.api_park;
 
 import com.dnsouzadev.api_park.web.dto.ClienteCreateDto;
 import com.dnsouzadev.api_park.web.dto.ClienteResponseDto;
+import com.dnsouzadev.api_park.web.dto.PageableDto;
 import com.dnsouzadev.api_park.web.exception.ErrorMessage;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -135,4 +136,52 @@ public class ClientIT {
         Assertions.assertThat(responseBody.getStatus()).isEqualTo(403);
     }
 
+    @Test
+    public void searchClient_withPaginationByAdmin_ShouldReturn200() {
+        PageableDto responseBody = testClient
+                .get()
+                .uri("/api/v1/clientes")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@email.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PageableDto.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(responseBody).isNotNull();
+        Assertions.assertThat(responseBody.getContent().size()).isEqualTo(2);
+        Assertions.assertThat(responseBody.getNumber()).isEqualTo(0);
+        Assertions.assertThat(responseBody.getTotalPages()).isEqualTo(1);
+    }
+
+    @Test
+    public void searchClient_withPaginationSortedByAdmin_ShouldReturn200() {
+        PageableDto responseBody = testClient
+                .get()
+                .uri("/api/v1/clientes?size=1&page=1")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@email.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PageableDto.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(responseBody).isNotNull();
+        Assertions.assertThat(responseBody.getContent().size()).isEqualTo(1);
+        Assertions.assertThat(responseBody.getNumber()).isEqualTo(1);
+        Assertions.assertThat(responseBody.getTotalPages()).isEqualTo(2);
+    }
+
+    @Test
+    public void searchClient_withPaginationByClient_ShouldReturn403() {
+        ErrorMessage responseBody = testClient
+                .get()
+                .uri("/api/v1/clientes")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "bia@email.com", "123456"))
+                .exchange()
+                .expectStatus().isForbidden()
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(responseBody).isNotNull();
+        Assertions.assertThat(responseBody.getStatus()).isEqualTo(403);
+    }
 }
