@@ -1,9 +1,6 @@
 package com.dnsouzadev.api_park.web.exception;
 
-import com.dnsouzadev.api_park.exception.CpfUniqueViolationException;
-import com.dnsouzadev.api_park.exception.EntityNotFoundException;
-import com.dnsouzadev.api_park.exception.PasswordInvalidException;
-import com.dnsouzadev.api_park.exception.UsernameUniqueViolationException;
+import com.dnsouzadev.api_park.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,7 +27,7 @@ public class ApiExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, "Invalid Fields.", result));
     }
 
-    @ExceptionHandler({UsernameUniqueViolationException.class, CpfUniqueViolationException.class})
+    @ExceptionHandler({UsernameUniqueViolationException.class, CpfUniqueViolationException.class, CodigoUniqueViolationException.class})
     public ResponseEntity<ErrorMessage> uniqueViolationException(RuntimeException ex, HttpServletRequest request) {
         log.error("Api Error - ", ex);
         return ResponseEntity
