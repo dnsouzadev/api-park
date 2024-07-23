@@ -30,4 +30,9 @@ public class VagaService {
         (() -> new EntityNotFoundException(String.format("Vaga with code {%s} not found.", code))));
     }
 
+    @Transactional(readOnly = true)
+    public Vaga findByAvailableVaga() {
+        return vagaRepository.findFirstByStatus(true).orElseThrow(
+        () -> new EntityNotFoundException("No available parking spaces."));
+    }
 }
