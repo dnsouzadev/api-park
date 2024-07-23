@@ -5,12 +5,13 @@ import com.dnsouzadev.api_park.entity.ClienteVaga;
 import com.dnsouzadev.api_park.entity.Vaga;
 import com.dnsouzadev.api_park.util.EstacionamentoUtils;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class EstacionamentoService {
 

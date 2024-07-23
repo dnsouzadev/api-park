@@ -1,5 +1,7 @@
 package com.dnsouzadev.api_park.web.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -16,6 +18,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EstacionamentoResponseDto {
 
     private String placa;
@@ -24,7 +27,9 @@ public class EstacionamentoResponseDto {
     private String cor;
     private String clienteCpf;
     private String recibo;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dataEntrada;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dataSaida;
     private String vagaCodigo;
     private BigDecimal valor;

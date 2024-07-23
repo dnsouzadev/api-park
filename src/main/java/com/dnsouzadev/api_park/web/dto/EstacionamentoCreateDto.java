@@ -12,7 +12,7 @@ import org.hibernate.validator.constraints.br.CPF;
 public class EstacionamentoCreateDto {
 
     @NotBlank
-    @Size(min = 8, max = 8)
+    @Size(min = 7, max = 8)
     @Pattern(regexp = "[A-Z]{3}[0-9][0-9A-Z][0-9]{2}", message = "A placa deve seguir o padrão Mercosul (AAA0A00)")
     private String placa;
     @NotBlank
@@ -25,6 +25,5 @@ public class EstacionamentoCreateDto {
     @Size(min = 11, max = 11)
     @CPF
     private String clienteCpf;
-
 
 }

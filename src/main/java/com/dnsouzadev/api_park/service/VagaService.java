@@ -9,6 +9,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.dnsouzadev.api_park.entity.Vaga.StatusVaga.LIVRE;
+
 @Service
 @RequiredArgsConstructor
 public class VagaService {
@@ -32,7 +34,7 @@ public class VagaService {
 
     @Transactional(readOnly = true)
     public Vaga findByAvailableVaga() {
-        return vagaRepository.findFirstByStatus(true).orElseThrow(
+        return vagaRepository.findFirstByStatus(LIVRE).orElseThrow(
         () -> new EntityNotFoundException("No available parking spaces."));
     }
 }
