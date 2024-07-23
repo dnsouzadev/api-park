@@ -17,4 +17,10 @@ public class ClienteVagaService {
         return repository.save(clienteVaga);
     }
 
+    @Transactional(readOnly = true)
+    public ClienteVaga findByRecibo(String recibo) {
+        return repository.findByReciboAndDataSaidaIsNull(recibo).orElseThrow(
+                () -> new IllegalArgumentException("Recibo não localizado: " + recibo)
+        );
+    }
 }
