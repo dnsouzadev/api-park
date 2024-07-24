@@ -27,6 +27,7 @@ public class JasperService {
     private final DataSource dataSource;
 
     private Map<String, Object> params = new HashMap<>();
+
     private static final String JASPER_DIRETORIO = "classpath:reports/";
 
     public void addParams(String key, Object value) {
@@ -43,10 +44,9 @@ public class JasperService {
             JasperPrint print = JasperFillManager.fillReport(stream, params, dataSource.getConnection());
             bytes = JasperExportManager.exportReportToPdf(print);
         } catch (IOException | JRException | SQLException e) {
-            log.error("Erro ao gerar PDF:::", e.getCause());
+            log.error("Jasper Reports ::: ", e.getCause());
             throw new RuntimeException(e);
         }
         return bytes;
     }
-
 }
