@@ -267,4 +267,34 @@ public class EstacionamentoIT {
                 .jsonPath("status").isEqualTo("403")
                 .jsonPath("method").isEqualTo("GET");
     }
+
+    @Test
+    public void findParkingClient_withValidAuth_ShouldReturn200() {
+        PageableDto responseBody = testClient
+                .get()
+                .uri("api/v1/estacionamentos?size=1&page=0")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "bob@email.com.br", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PageableDto.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(responseBody).isNotNull();
+        Assertions.assertThat(responseBody.getContent().size()).isEqualTo(1);
+        Assertions.assertThat(responseBody.getTotalPages()).isEqualTo(2);
+        Assertions.assertThat(responseBody.getNumber()).isEqualTo(0);
+    }
+
+    @Test
+    public void findParkingClient_withRoleAdmin_ShouldReturn403() {
+        testClient
+                .get()
+                .uri("api/v1/estacionamentos")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@email.com.br", "123456"))
+                .exchange()
+                .expectStatus().isForbidden()
+                .expectBody()
+                .jsonPath("status").isEqualTo("403")
+                .jsonPath("method").isEqualTo("GET");
+    }
 }
